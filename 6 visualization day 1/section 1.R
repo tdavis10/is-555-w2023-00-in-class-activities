@@ -121,6 +121,22 @@ penguins %>%
 
 tips <- read_csv('https://www.dropbox.com/s/rydxlxdarjdoj7a/tips.csv?dl=1')
 
+tips %>% 
+  mutate(tip_perc = tip/total_bill) %>% 
+  ggplot(aes(x = total_bill, y = tip_perc, color = sex, shape = smoker)) +
+  geom_point() + 
+  facet_wrap(~smoker, nrow = 2 )
+
+
+#Facet Grid
+tips %>% 
+  mutate(tip_perc = tip/total_bill) %>% 
+  ggplot(aes(x = total_bill, y = tip_perc, color = sex, shape = smoker)) +
+  geom_point() + 
+  #facet_grid(rows~columns)
+  facet_grid(smoker~day)
+
+
 # Let's plot tip_percentage vs. total_bill,
 # then split that across lots of categories
 
@@ -130,6 +146,13 @@ econ <- read_csv('https://www.dropbox.com/s/8bq9rw0rk46hru2/econ.csv?dl=1')
 
 # Let's plot two measures over time: savings rate & unemployment weeks
 # It's easiest if we pivot to make this work
-
+econ %>% 
+  select(date, savings_rate, unempl_weeks) %>% 
+  filter(date < lubridate ::mdy('01-01-1970')) %>% 
+  pivot_longer(savings_rate:unempl_weeks, names_to = 'Measure',
+               values_to = 'Rate') %>% 
+  ggplot(aes(x= date, y = Rate, color = Measure)) +
+  geom_line(size = 1.5) +
+  facet_wrap(~Measure, nrow=2, scales = 'free_y')
 
 
