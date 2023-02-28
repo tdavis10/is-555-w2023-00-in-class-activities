@@ -94,27 +94,42 @@ penguins %>%
 # Violin plots are cool. Lets look at body mass across islands
 # Notice what happens when we add color now
 penguins %>% 
-  ggplot(aes(x = island, y = body_mass_g, fill = species)) +
+  ggplot(aes(x = island, y = body_mass_g, color = species, fill = species)) +
   geom_violin()
 
 # Bar plots with both x and  y are a bit more flexible.
-# stat summary will give us means
-
+# summary will give us means
+penguins %>% 
+  filter(!is.na(sex)) %>% 
+  ggplot(aes(x=species, y=body_mass_g, fill=sex)) + 
+  geom_bar(stat = "summary", position = 'dodge')
 
 # Numeric + numeric
 
 # The classic scatter
-# can do bill depth vs length if we want
+# Important: attributes vs aesthetics. Inheritance
+penguins %>% 
+  ggplot(mapping = aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(size = 4)
 
+# 
+penguins %>% 
+  ggplot(mapping = aes(x = bill_depth_mm, y = bill_length_mm, color = species)) +
+  geom_point(size = 4) 
 
 
 # More inheritance general vs. local aesthetics: if we have time
 # flipper vs. body mass generally, species mapped to color, then add a smoother
-
+penguins %>% 
+  ggplot(mapping = aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point() +
+  geom_smooth()
 
 # versus: mapping the color specific to the scatter points only
-
-
+penguins %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(mapping = aes(color = species)) +
+  geom_smooth()
 
 
 # Facets and multi-lines --------------------------------------------------------------------------------
@@ -139,13 +154,31 @@ tips %>%
 
 # Let's plot tip_percentage vs. total_bill,
 # then split that across lots of categories
+tips %>% glimpse
 
+tips 
+
+tips %>% 
+  mutate(bad_smoker_tip = ifelse(smoker == 'Yes', tip*100, tip)) %>% 
+  # mutate(tip_perc = tip/total_bill) %>% 
+  ggplot(aes(x = total_bill, y = bad_smoker_tip, color = sex)) +
+  geom_point(size = 3) +
+  facet_wrap(~smoker, nrow = 1, scales = 'free_y')
+
+tips %>% 
+  mutate(bad_smoker_tip = ifelse(smoker == 'Yes', tip*100, tip)) %>% 
+  mutate(bad_day_total = ifelse(day %in% c('Sun', 'Sat'), total_bill*1000, total_bill)) %>% 
+  # mutate(tip_perc = tip/total_bill) %>% 
+  ggplot(aes(x = bad_day_total, y = bad_smoker_tip, color = sex)) +
+  geom_point(size = 3) +
+  facet_grid(size~day, scales = 'free')
 
 
 econ <- read_csv('https://www.dropbox.com/s/8bq9rw0rk46hru2/econ.csv?dl=1')
 
 # Let's plot two measures over time: savings rate & unemployment weeks
 # It's easiest if we pivot to make this work
+<<<<<<< HEAD
 econ %>% 
   select(date, savings_rate, unempl_weeks) %>% 
   filter(date < lubridate ::mdy('01-01-1970')) %>% 
@@ -154,5 +187,16 @@ econ %>%
   ggplot(aes(x= date, y = Rate, color = Measure)) +
   geom_line(size = 1.5) +
   facet_wrap(~Measure, nrow=2, scales = 'free_y')
+=======
+econ %>%
+  select(date, savings_rate, unempl_weeks) %>% 
+  # filter(date < lubridate::mdy('01-01-1970')) %>% 
+  pivot_longer(savings_rate:unempl_weeks,
+               names_to = 'Measure',
+               values_to = 'Rate') %>% 
+  ggplot(aes(x = date, y = Rate, color = Measure)) +
+  geom_line(size = 1.5)# +
+  # facet_wrap(~Measure, nrow = 2, scales = 'free_y')
+>>>>>>> 7378c7e33ea91e84eb35a6a7e86dbced65a2c14f
 
 
