@@ -66,15 +66,23 @@ penguins %>%
 
 # First: one-variable plots
 
+
+
 # histogram with body_mass_g
 # add species as fill color, pay attention to position
 penguins %>% 
+<<<<<<< Updated upstream
   ggplot(mapping = aes(x = body_mass_g, color = species, fill = species)) +
   geom_histogram(alpha = .5, position = 'dodge',bins = 15) +
   theme_bw()+
   labs(title = 'Whatever string',
        x = "this is a weight",
        y = 'Count')
+=======
+  ggplot(mapping= aes(x = body_mass_g, color = species, fill = species)) + 
+  geom_histogram(alpha = .5, position='dodge', binwidth = 1000) + theme_linedraw() + 
+  labs(title = 'Whatever String', x = "This is a Weight", y='Count')
+>>>>>>> Stashed changes
 
 # density curves are sometimes nicer. Let's do the above but with 
 # a density curve. Alpha is nice here.
@@ -83,8 +91,12 @@ penguins %>%
 # bar charts with categoricals: quick, easy counts summary
 # stacked vs. side-by-side
 penguins %>% 
+<<<<<<< Updated upstream
   filter(!is.na(sex)) %>% 
   ggplot(aes(x = species, fill = sex)) +
+=======
+  ggplot(aes(x=species, fill = sex)) + 
+>>>>>>> Stashed changes
   geom_bar(position = 'dodge')
 
 
@@ -94,8 +106,12 @@ penguins %>%
 # Violin plots are cool. Lets look at body mass across islands
 # Notice what happens when we add color now
 penguins %>% 
+<<<<<<< Updated upstream
   ggplot(aes(x = island, y = body_mass_g, color = species, fill = species)) +
   geom_violin()
+=======
+  ggplot(aes(x = island, y = body_mass_g, fill = species)) + geom_violin()
+>>>>>>> Stashed changes
 
 # Bar plots with both x and  y are a bit more flexible.
 # summary will give us means
